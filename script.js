@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Calculates whether the store is open or closed based on current time (9:00 AM - 9:00 PM)
+ * Calculates whether the store is open or closed based on current Indian Standard Time (IST) (9:00 AM - 9:00 PM)
  * and updates the DOM elements.
  */
 function updateStoreStatus() {
@@ -62,13 +62,25 @@ function updateStoreStatus() {
   
   if (!statusIndicator || !statusText) return;
 
-  // Get current hour in the user's local timezone (typically local to Visakhapatnam/India if viewing the business)
+  // Get current hour in Indian Standard Time (IST - Asia/Kolkata timezone)
   const now = new Date();
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
+  let currentHour;
+
+  try {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Kolkata',
+      hour: 'numeric',
+      hour12: false
+    });
+    // Strip non-numeric characters (handles LTR/RTL mark differences in browsers)
+    currentHour = parseInt(formatter.format(now).replace(/\D/g, ''), 10);
+  } catch (error) {
+    // Fallback to client browser time if Intl is not supported
+    currentHour = now.getHours();
+  }
   
-  const openHour = 9;   // 9:00 AM
-  const closeHour = 21; // 9:00 PM
+  const openHour = 9;   // 9:00 AM IST
+  const closeHour = 21; // 9:00 PM IST
 
   // Check if store is open
   const isOpen = currentHour >= openHour && currentHour < closeHour;
@@ -78,11 +90,11 @@ function updateStoreStatus() {
 
   if (isOpen) {
     statusIndicator.classList.add('open');
-    statusText.textContent = 'Open Now (9:00 AM - 9:00 PM)';
+    statusText.textContent = 'Open Now (9:00 AM - 9:00 PM IST)';
     statusText.style.color = 'var(--accent-emerald)';
   } else {
     statusIndicator.classList.add('closed');
-    statusText.textContent = 'Closed Now (Opens at 9:00 AM)';
+    statusText.textContent = 'Closed Now (Opens at 9:00 AM IST)';
     statusText.style.color = 'var(--accent-rose)';
   }
 }
