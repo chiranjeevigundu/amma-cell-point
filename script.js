@@ -110,13 +110,19 @@ function updateStoreStatus() {
  * Handles fallbacks gracefully to ensure the site always displays a realistic visit number if the API fails.
  */
 function fetchVisitorCount() {
-  const visitorCountEl = document.getElementById('visit-count');
-  if (!visitorCountEl) return;
+  const heroCountEl = document.getElementById('visit-count-hero');
+  const contactCountEl = document.getElementById('visit-count-contact');
 
   // We use the completely free, public CounterAPI dev endpoint
   const projectKey = 'chiranjeevigundu';
   const namespace = 'ammacellpoint';
   const apiURL = `https://api.counterapi.dev/v1/${projectKey}/${namespace}/up`;
+
+  const updateUI = (count) => {
+    const formattedCount = count.toLocaleString();
+    if (heroCountEl) heroCountEl.textContent = formattedCount;
+    if (contactCountEl) contactCountEl.textContent = formattedCount;
+  };
 
   fetch(apiURL)
     .then(response => {
@@ -125,8 +131,7 @@ function fetchVisitorCount() {
     })
     .then(data => {
       if (data && typeof data.value === 'number') {
-        // Format with commas, e.g. 1,234
-        visitorCountEl.textContent = data.value.toLocaleString();
+        updateUI(data.value);
       } else {
         throw new Error('Invalid data format');
       }
@@ -145,7 +150,7 @@ function fetchVisitorCount() {
       sessionVisits = parseInt(sessionVisits, 10) + 1;
       localStorage.setItem('simulated_visits', sessionVisits);
       
-      visitorCountEl.textContent = sessionVisits.toLocaleString();
+      updateUI(sessionVisits);
     });
 }
 

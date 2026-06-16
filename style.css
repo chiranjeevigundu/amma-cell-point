@@ -817,7 +817,19 @@ footer {
 }
 
 /* Visitor Counter Pill */
-.visitor-pill {
+/* Visitor Counter & Popularity Badges */
+.hero-badges {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.hero-badges .badge {
+  margin-bottom: 0;
+}
+
+.store-popularity-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -825,9 +837,11 @@ footer {
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 0.4rem 1rem;
   border-radius: 9999px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  margin: 0.5rem 0;
+  margin-top: 0.5rem;
+  box-shadow: var(--shadow-sm);
+  max-width: fit-content;
 }
 
 .visitor-pulse {
